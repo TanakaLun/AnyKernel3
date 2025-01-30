@@ -51,3 +51,24 @@ else
     write_boot # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
 fi
 ## end boot install
+#Install susfs module
+/data/adb/ksud module install $AKHOME/ksu_module_susfs_1.5.2+.zip
+#Uninstall KSU Manager
+pm uninstall me.weishu.kernelsu
+#Set up susfs
+CONFIG_DIR="/data/adb/susfs4ksu"
+CONFIG_FILE="$CONFIG_DIR/config.sh"
+if [ ! -d "$CONFIG_DIR" ]; then
+    echo "Creating directory: $CONFIG_DIR"
+    mkdir -p "$CONFIG_DIR"
+fi
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Creating file: $CONFIG_FILE"
+    touch "$CONFIG_FILE"
+fi
+if ! grep -q "sus_su=2" "$CONFIG_FILE"; then
+    echo "Adding 'sus_su=2' to $CONFIG_FILE"
+    echo "sus_su=2" >> "$CONFIG_FILE"
+else
+    echo "'sus_su=2' already exists in $CONFIG_FILE"
+fi
