@@ -55,6 +55,8 @@ fi
 /data/adb/ksud module install $AKHOME/ksu_module_susfs_1.5.2+.zip
 #Uninstall KSU Manager
 pm uninstall me.weishu.kernelsu
+#Install Ksu next manager
+pm install $AKHOME/ksun.apk
 #Set up susfs
 CONFIG_DIR="/data/adb/susfs4ksu"
 CONFIG_FILE="$CONFIG_DIR/config.sh"
