@@ -55,8 +55,20 @@ fi
 /data/adb/ksud module install $AKHOME/ksu_module_susfs_1.5.2+.zip
 #Uninstall KSU Manager
 pm uninstall me.weishu.kernelsu
-#Install Ksu next manager
-pm install $AKHOME/ksun.apk
+#Install KSUN Manager
+PACKAGE_NAME="com.rifsxd.ksunext"
+APK_PATH="$AKHOME/ksun.apk"
+if pm list packages | grep -q "$PACKAGE_NAME"; then
+    ui_print "KernelSu Next Manager is already installed, skipping installation..."
+else
+    ui_print "KernelSu Next Manager is not installed yet. Installation is in progress..."
+    pm install "$APK_PATH"
+        if [ $? -eq 0 ]; then
+        ui_print "Installation Successful"
+    else
+        ui_print "Installation failed, please check the file path"
+    fi
+fi
 #Set up susfs
 CONFIG_DIR="/data/adb/susfs4ksu"
 CONFIG_FILE="$CONFIG_DIR/config.sh"
