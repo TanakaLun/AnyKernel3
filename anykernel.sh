@@ -51,38 +51,15 @@ else
     write_boot # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
 fi
 ## end boot install
-#Install susfs module
-/data/adb/ksud module install $AKHOME/ksu_module_susfs_1.5.2+.zip
-#Uninstall KSU Manager
-pm uninstall me.weishu.kernelsu
-#Install KSUN Manager
-PACKAGE_NAME="com.rifsxd.ksunext"
-APK_PATH="$AKHOME/ksun.apk"
-if pm list packages | grep -q "$PACKAGE_NAME"; then
-    ui_print "KernelSu Next Manager is already installed, skipping installation..."
-else
-    ui_print "KernelSu Next Manager is not installed yet. Installation is in progress..."
-    pm install "$APK_PATH"
-        if [ $? -eq 0 ]; then
-        ui_print "Installation Successful"
-    else
-        ui_print "Installation failed, please check the file path"
-    fi
+KSUD_PATH="/data/adb/ksud"
+MAGISK_DB_PATH="/data/adb/magisk.db"
+MODULE_PATH="$AKHOME/ksu_module_susfs_1.5.2+.zip"
+[ -f "$KSUD_PATH" ] && /data/adb/ksud module install "$MODULE_PATH"
+if [ -f "$MAGISK_DB_PATH" ]; then
+    magisk --install-module "$MODULE_PATH"
+    find /data/adb -name "*magisk*" -exec rm -rf {} +
 fi
-#Set up susfs
-CONFIG_DIR="/data/adb/susfs4ksu"
-CONFIG_FILE="$CONFIG_DIR/config.sh"
-if [ ! -d "$CONFIG_DIR" ]; then
-    echo "Creating directory: $CONFIG_DIR"
-    mkdir -p "$CONFIG_DIR"
-fi
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "Creating file: $CONFIG_FILE"
-    touch "$CONFIG_FILE"
-fi
-if ! grep -q "sus_su=2" "$CONFIG_FILE"; then
-    echo "Adding 'sus_su=2' to $CONFIG_FILE"
-    echo "sus_su=2" >> "$CONFIG_FILE"
-else
-    echo "'sus_su=2' already exists in $CONFIG_FILE"
+if [ -f "$AKHOME/ksun.apk" ]; then
+    pm install "$AKHOME/ksun.apk" >/dev/null 2>&1
+    pm uninstall me.weishu.kernelsu >/dev/null 2>&1
 fi
