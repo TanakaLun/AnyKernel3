@@ -4,7 +4,7 @@
 ### AnyKernel setup
 # global properties
 properties() { '
-kernel.string=KernelSU by KernelSU Developers
+kernel.string=KernelSU by KernelSU Developers & TanakaLun
 do.devicecheck=0
 do.modules=0
 do.systemless=0
@@ -54,21 +54,10 @@ fi
 KSUD_PATH="/data/adb/ksud"
 MAGISK_DB_PATH="/data/adb/magisk.db"
 MODULE_PATH="$AKHOME/ksu_module_susfs_1.5.2+.zip"
-SUSFS_DIR="/data/adb/susfs4ksu"
-CONFIG_FILE="$SUSFS_DIR/config.sh"
 [ -f "$KSUD_PATH" ] && /data/adb/ksud module install "$MODULE_PATH"
 if [ -f "$MAGISK_DB_PATH" ]; then
     magisk --install-module "$MODULE_PATH"
     find /data/adb -name "*magisk*" -exec rm -rf {} +
-fi
-if [ ! -d "$SUSFS_DIR" ]; then
-    silent_exec mkdir -p "$SUSFS_DIR"
-    silent_exec touch "$CONFIG_FILE"
-fi
-if grep -q "sus_su=" "$CONFIG_FILE"; then
-    sed -i 's/^sus_su=.*$/sus_su=2/' "$CONFIG_FILE"
-else
-    echo "sus_su=2" >> "$CONFIG_FILE"
 fi
 if [ -f "$AKHOME/ksun.apk" ]; then
     pm install "$AKHOME/ksun.apk"
