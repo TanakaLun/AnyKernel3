@@ -1,10 +1,11 @@
 ### AnyKernel3 Ramdisk Mod Script
+## KernelSU with SUSFS By TanakaLun
 ## osm0sis @ xda-developers
 
 ### AnyKernel setup
 # global properties
 properties() { '
-kernel.string=KernelSU by KernelSU Developers & TanakaLun
+kernel.string=KernelSU by KernelSU Developers
 do.devicecheck=0
 do.modules=0
 do.systemless=0
