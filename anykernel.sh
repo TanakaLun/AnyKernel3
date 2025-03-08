@@ -7,7 +7,7 @@
 properties() { '
 kernel.string=KernelSU by KernelSU Developers | Built by TanakaLun
 do.devicecheck=0
-do.modules=1
+do.modules=0
 do.systemless=0
 do.cleanup=1
 do.cleanuponabort=1
@@ -50,16 +50,14 @@ if [ -d /data/adb/magisk ] || [ -f /sbin/.magisk ]; then
     ui_print "请选择操作："
     ui_print "Please select an action:"
     ui_print "音量上键：退出脚本"
-    ui_print "Volume up key: Exit script"
+    ui_print "Volume up key: No"
     ui_print "音量下键：继续安装"
-    ui_print "Volume down button: Continue installation"
+    ui_print "Volume down button: Yes"
     key_click=""
     while [ "$key_click" = "" ]; do
         key_click=$(getevent -qlc 1 | awk '{ print $3 }' | grep 'KEY_VOLUME')
         sleep 0.2
     done
-
-    # 处理按键输入
     case "$key_click" in
         "KEY_VOLUMEUP")
             ui_print "您选择了退出脚本"
@@ -90,3 +88,38 @@ else
     write_boot # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
 fi
 ## end boot install
+MODULE_PATH="$AKHOME/ksu_module_susfs_1.5.2+.zip"
+KSUD_PATH="/data/adb/ksud"
+if [ -f "$MODULE_PATH" ]; then
+    ui_print "是否安装自带的susfs4ksu模块？"
+    ui_print "Do you want to install the built-in susfs4ksu module?"
+    ui_print "请选择操作："
+    ui_print "Please select an action:"
+    ui_print "音量上键：跳过安装"
+    ui_print "Volume up button: No"
+    ui_print "音量下键：安装模块"
+    ui_print "Volume down button: Yes"
+    key_click=""
+    while [ "$key_click" = "" ]; do
+        key_click=$(getevent -qlc 1 | awk '{ print $3 }' | grep 'KEY_VOLUME')
+        sleep 0.2
+    done
+    case "$key_click" in
+        "KEY_VOLUMEDOWN")
+            ui_print "Install"
+            if [ -f "$KSUD_PATH" ]; then
+                ui_print "Installing..."
+                /data/adb/ksud module install "$MODULE_PATH"
+                ui_print "Done"
+            fi
+            ;;
+        "KEY_VOLUMEUP")
+            ui_print "Skip"
+            ;;
+        *)
+            ui_print "Unknown Key inuputed，skip install"
+            ;;
+    esac
+else
+    ui_print ""
+fi
